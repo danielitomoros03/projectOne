@@ -8,6 +8,7 @@ int main(){
     cin >> N >> M;
     int elementosLaberinto = 0; // Cantidad de elementos en el laberinto
     cin >> elementosLaberinto;
+    if (L < 0 || N < 0 || M < 0 || elementosLaberinto < 0) return 1; 
     char T; int X = 0, Y = 0; // Tipo de elemento en el laberinto, posición en el eje X y eje Y; en el caso de los portales será P Xa Ya Xb Yb
     for (int i = 0; i < elementosLaberinto; i++){
         cin >> T >> X >> Y;
