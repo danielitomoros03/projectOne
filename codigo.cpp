@@ -66,22 +66,16 @@ void estadoFinal(){
 int validarMovimientos(){
     destino_jugadorX = jugadorX;
     destino_jugadorY = jugadorY;
-    cout << "Posicion inicial del jugador: " + to_string(jugadorX) + " " + to_string(jugadorY); 
+
     cin >> entrada;
     if (contarMovimiento(entrada)) { 
-        if ( destino_jugadorX < 0 || destino_jugadorX > N || destino_jugadorY < 0 ||  destino_jugadorY > M) cout << "Movimiento bloqueado por limites";
+        if ( destino_jugadorX < 0 || destino_jugadorX > N || destino_jugadorY < 0 ||  destino_jugadorY > M) cout << "Movimiento bloqueado" << endl;
         else {
             string aux = to_string(destino_jugadorX)+to_string(destino_jugadorY);
-            cout << "Aux: " + aux << endl;
-            cout << "Destino: " << destino_jugadorX << " " <<destino_jugadorY << endl;
             int elemento = elementos.find(aux);
-            cout << "Elementos: " << elementos << endl;
-            cout << elemento << endl;
             if (elemento != -1) {   
-                cout << "Elemento: " <<  elemento << endl;
                 tipo = elementos.at(elemento-1);
-        
-                cout << tipo << endl;
+
                 // Casos Portal
                 if (tipo != 'P' and tipo != '#' and tipo != '.' and tipo != 'T' and tipo != 'X') {
                     cout << elementos.at(8) << endl;
@@ -107,14 +101,11 @@ int validarMovimientos(){
                 }   
             } else {
                 jugadorX = destino_jugadorX;
-                jugadorY = destino_jugadorY;                
-                cout << "Elemento no presente" << endl;
+                jugadorY = destino_jugadorY;
             }
         }
     }   else {
-        cout << "Opcion Invalida";
     }
-    cout << "El jugador se encuentra en: " << jugadorX << "," << jugadorY; 
     return 0;
 }
 int main(){
@@ -147,22 +138,11 @@ int main(){
                 elementos += to_string(Xb) + to_string(Yb);
             }
         }
-        // contarElementos(T);
-        /*if (TotalPortales + TotalEspacios + TotalTrampas + TotalMuros + TotalTesoros > casillas) return 1; // Validación de cantidad de elementos en el laberinto
-        // if (TotalPortales > 5 || TotalTrampas > 10 || TotalMuros > 10 || TotalTesoros > 10) return 1; // Validación de cantidad de elementos en el laberinto
-        if (T == 'X') L -= 10; // Reduce la vida del jugador si cae en ella
-        if (T == '.'){} // Espacio vacío que permite el paso
-        if (T == '#'){} // Bloquea el paso del jugador 
-        if (T == 'T') L += 20; // Otorga un bonus de vida al jugador
-        */
-        cout << elementos << endl;
     }
     
     cin >> cantidadMovimientos;
     if (cantidadMovimientos < 0) return 1; // Validar que la cantidad de movimientos sea mayor a 0
     for (int i = 0; i < cantidadMovimientos; i++){
-        // cantidadMovimientos--; // Restar un movimiento
-        // if (cantidadMovimientos < 1) cout << "Se ha quedado sin movimientos." << endl; // Validar que dispone de movimientos
         validarMovimientos();
     }
 
