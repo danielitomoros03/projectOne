@@ -282,7 +282,7 @@ void encontrarMejorEquipo(Numor* numorisDB, int cantidadNumoris, Numor** numoris
     int menorSumaIds = VMAX;
     int k = 6;
     Numor equipoActual[6];
-    bool usado[cantidadNumoris];
+    bool usado[cantidadNumoris] = {false};
     int idsActuales[6];
 
     encontrarMejorEquipoBT(numorisDB, cantidadNumoris, k, equipoActual, usado, 0, numorisOscuros, cantidadPorPiso, pisos, mejorEquipoIds, idsActuales, 0, menorDanio, menorBajas, menorSumaIds);
