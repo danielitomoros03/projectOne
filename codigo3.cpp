@@ -262,6 +262,7 @@ void encontrarMejorEquipoBT(Numor* numorisDB, int cantidadNumoris, int tamPer, N
                 }
             }
         }
+        return;
     }
 
     for (int i = 0; i < cantidadNumoris; ++i) {
