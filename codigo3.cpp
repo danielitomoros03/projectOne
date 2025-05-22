@@ -108,11 +108,11 @@ ResultadoCombate simularCombatePiso(Numor (&equipo)[6], Numor oscuros[], int can
 
     for (int i = 0; i < 6; i++) {
         equipoCopia[i] = equipo[i];
-    } cout << endl;
+    }
 
     for (int i = 0; i < cantidadOscuros; i++) {
         oscurosCopia[i] = oscuros[i];
-    } cout << endl;
+    }
     
     int indiceEquipo = 0;
     int indiceOscuro = 0;
@@ -214,9 +214,7 @@ void encontrarMejorEquipoBT(Numor* numorisDB, int cantidadNumoris, int tamPer, N
     if (tamPer == numEle) {
         for (int i = 0; i < tamPer; ++i) {
             idsActuales[i] = equipoActual[i].id;
-            cout << idsActuales[i] << " ";
         }
-        cout << endl;
 
         ResultadoCombate resultado = simularCombateTorre(equipoActual, numorisOscuros, cantidadPorPiso, pisos);
         if (resultado.victoria) {
@@ -255,10 +253,6 @@ void encontrarMejorEquipoBT(Numor* numorisDB, int cantidadNumoris, int tamPer, N
                 menorDanio = resultado.danioTotal;
                 for (int i = 0; i < 6; i++) {
                     mejorEquipoIds[i] = idsActuales[i];
-                    
-                } cout << "Nuevo mejor equipo encontrado (bajas: " << menorBajas << ", danio: " << menorDanio << "): ";
-                for (int i = 0; i < 6; i++) {
-                    cout << mejorEquipoIds[i] << " ";
                 }
             }
         }
@@ -296,7 +290,6 @@ int main() {
     // Leer la base de datos de Numoris
     ifstream DB("NumorisDB.in");
     if (!DB.is_open()) {
-        cout << "Error al abrir archivo NumorisDB.in" << endl;
         return -1;
     }
 
@@ -307,13 +300,11 @@ int main() {
     llenarArreglo("NumorisDB.in", numorisDB, N);
 
     // Leer torre
-    cout << "Ingrese el numero de la Torre (X): ";
     cin >> X;
     string filename = "Torre" + to_string(X) + ".in";
 
     ifstream torre_info(filename);
     if (!torre_info.is_open()) {
-        cout << "Error al abrir archivo " << filename << endl;
         delete[] numorisDB;
         return -1;
     }
@@ -338,12 +329,10 @@ int main() {
     encontrarMejorEquipo(numorisDB, N, numorisOscuros, cantidadPorPiso, pisos, mejorEquipoIds);
 
     // Mostrar el resultado
-    cout << "\nEl mejor equipo para derrotar la torre es:\n";
     for (int i = 0; i < 6; i++) {
         cout << mejorEquipoIds[i];
         if (i < 5) cout << " ";
     }
-    cout << endl;
 
     // Liberar memoria
     for (int i = 0; i < pisos; i++) {
@@ -355,6 +344,5 @@ int main() {
     delete[] cantidadPorPiso;
     delete[] numorisDB;
 
-    system("pause");
     return 0;
 }
