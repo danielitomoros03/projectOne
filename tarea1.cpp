@@ -215,6 +215,7 @@ int main(){
     auto endTime = high_resolution_clock::now();
     duration<float, milli> duration = endTime - startTime;
     double finalTime = duration.count();
+    cout << "Tiempo de ejecución: " << finalTime << " ms" << endl;
 
     return 0;
 }

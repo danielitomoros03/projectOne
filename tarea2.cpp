@@ -282,6 +282,8 @@ int main() {
     Maze myMaze2(N2);
     Maze myMaze3(N3);
 
+    auto startTime = high_resolution_clock::now();
+    // Codigo a medir
     cout << "Laberinto Generado Aleatoriamente:" << endl;
     myMaze1.printMaze();
     cout << endl;
@@ -299,8 +301,15 @@ int main() {
     } else {
         cout << "No se encontró camino (CxF)." << endl;
     }
+    // Final de Medición de tiempo
+    auto endTime = high_resolution_clock::now();
+    duration<float, milli> duration = endTime - startTime;
+    double finalTime = duration.count();
+    cout << "Tiempo de ejecución (CxF): " << finalTime << " ms" << endl;
     cout << endl;
 
+    auto startTime2 = high_resolution_clock::now();
+    // Codigo a medir
     // Resuelve usando recorrerFxC
     cout << "Resolviendo con recorrerFxC:" << endl;
     // Crea otra copia del grid del laberinto para el segundo algoritmo.
@@ -312,7 +321,13 @@ int main() {
     } else {
         cout << "No se encontró camino (FxC)." << endl;
     }
-
+    // Final de Medición de tiempo
+    auto endTime2 = high_resolution_clock::now();
+    chrono::duration<float, milli> duration2 = endTime2 - startTime2;
+    double finalTime2 = duration2.count();
+    cout << "Tiempo de ejecución (FxC): " << finalTime2 << " ms" << endl;
+    cout << endl;
+    
     system("pause");
     return 0;
 }
