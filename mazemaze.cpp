@@ -98,6 +98,7 @@ int main(){
     srand(time(0));
 
     double promedioTime = 0.0;
+    double aux = 3.0;
 
     auto startTime = high_resolution_clock::now();
     int** miLaberinto1 = crearLaberinto(N1);
@@ -146,7 +147,8 @@ int main(){
     cout << endl;
     promedioTime += finalTime3;
 
-    cout << "Tiempo de ejecución Promedio: " << promedioTime << " ms" << endl;
+
+    cout << "Tiempo de ejecución Promedio: " << promedioTime/aux << " ms" << endl;
     cout << endl;
     
     for (int i = 0; i < N1; i++){
