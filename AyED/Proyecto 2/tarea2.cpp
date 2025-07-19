@@ -1,8 +1,8 @@
 #include<iostream>
+#include<string>
 #include<chrono>
 using namespace std;
 using namespace chrono;
-
 
 template <typename T>
 class Queue {
@@ -96,7 +96,6 @@ public:
 };
 
 template <typename T>
-
 class Stack{
     private:
         struct Node{
@@ -223,7 +222,7 @@ class Stack{
        
 };
 
-class BST{
+class BST{ 
     private:
         struct Nodo{
             int valor;
@@ -514,6 +513,18 @@ class BST{
             cout << endl;
         }  
 
+        void printTree() {
+            printTreeHelper(raiz, 0);
+        }
+
+        void printTreeHelper(Nodo* nodo, int nivel) {
+            if (!nodo) return;
+            printTreeHelper(nodo->derecho, nivel + 1);
+            for (int i = 0; i < nivel; ++i) cout << "   ";
+            cout << nodo->valor << endl;
+            printTreeHelper(nodo->izquierdo, nivel + 1);
+        }
+
 
         //Funciones para llamar a los recorridos
         void postIte(int valor){
@@ -550,28 +561,42 @@ class BST{
         }
 };
 
+class Timer {
+    chrono::high_resolution_clock::time_point startTime, endTime;
+public:
+    void start() {
+        startTime = chrono::high_resolution_clock::now();
+    }
+    void stop() {
+        endTime = chrono::high_resolution_clock::now();
+    }
+    void printTime(const string &aux) {
+        auto duration = chrono::duration_cast<chrono::microseconds>(endTime - startTime);
+        cout << "Tiempo transcurrido para " << aux << ": " << duration.count() << " microsegundos." << endl;
+        cout << endl;
+        cout << endl;
+    }
+};
 int main(){
-
     BST tree;
+    int valores[] = {50, 30, 70, 20, 15, 8, 60};
+    int n = sizeof(valores) / sizeof(valores[0]);
+    for (int i = 0; i < n; i++) {
+        tree.insertar(valores[i]);
+    }
+    tree.printTree();
 
-    tree.insertar(50);
-    tree.insertar(30);
-    tree.insertar(70);
-    tree.insertar(20);
-    tree.insertar(15);
-    tree.insertar(8);
-    tree.insertar(60);
-
-    tree.post(50);
-    tree.postIte(50);
-
-    tree.pre(15);
-    tree.preIte(15);
-
-    tree.in(70);
-    tree.inIte(70);
-
-    tree.anchura(30);
+    Timer timeOne, timeTwo, timeThree, timeFour, timeFive, timeSix, timeSeven;
+    timeOne.start(); tree.post(50); timeOne.stop(); timeOne.printTime("Post-orden recursivo");
+    timeTwo.start(); tree.postIte(50);; timeTwo.stop(); timeTwo.printTime("Post-orden Iterativo");
+    
+    timeThree.start(); tree.pre(15);  timeThree.stop(); timeThree.printTime("Pre-orden recursivo");
+    timeFour.start(); tree.preIte(15); timeFour.stop(); timeFour.printTime("Pre-orden iterativo");
+    
+    timeFive.start(); tree.in(70); timeFive.stop(); timeFive.printTime("In-orden recursivo");
+    timeSix.start(); tree.inIte(70); timeSix.stop(); timeSix.printTime("In-orden iterativo");
+    
+    timeSeven.start(); tree.anchura(30); timeSeven.stop(); timeSeven.printTime("Anchura");
 
     return 0;
 }
