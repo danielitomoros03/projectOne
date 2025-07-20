@@ -231,17 +231,16 @@ class BST{
             Nodo(int v) : valor(v), izquierdo(nullptr), derecho(nullptr){}
         };
 
-    Nodo* raiz;
+        Nodo* raiz;
+        Nodo* insert(Nodo* nodo, int valor){
+            if(!nodo) return new Nodo(valor);
 
-    Nodo* insert(Nodo* nodo, int valor){
-        if(!nodo) return new Nodo(valor);
-
-        if(valor < nodo -> valor){
-            nodo -> izquierdo = insert(nodo -> izquierdo, valor);
-        } else {
-            nodo -> derecho = insert(nodo -> derecho, valor);
-        } return nodo;
-    }
+            if(valor < nodo -> valor){
+                nodo -> izquierdo = insert(nodo -> izquierdo, valor);
+            } else {
+                nodo -> derecho = insert(nodo -> derecho, valor);
+            } return nodo;
+        }
 
     public: 
 
@@ -369,7 +368,7 @@ class BST{
             int count = 0;
             preorden(raiz, valor, band, count);
             if(band) cout << valor << " ha sido encontrado. Nodos visitados: " << count << endl;
-            else cout << " No ha sido encontrado;\n";
+            else cout << " No ha sido encontrado\n";
         }
 
         void in(int valor){
@@ -378,7 +377,7 @@ class BST{
             int count = 0;
             inorden(raiz, valor, band, count);
             if(band) cout << valor << " ha sido encontrado. Nodos visitados: " << count << endl;
-            else cout << " No ha sido encontrado;\n";
+            else cout << " No ha sido encontrado\n";
         }
 
         void post(int valor){
@@ -559,44 +558,51 @@ class BST{
             if(band) cout << valor << " ha sido encontrado. Nodos visitados " << count << endl;
             else cout << "No ha sido encontrado;\n";
         }
+
+        class Timer {
+            chrono::high_resolution_clock::time_point startTime, endTime;
+        public:
+            void start() {
+                startTime = chrono::high_resolution_clock::now();
+            }
+            void stop() {
+                endTime = chrono::high_resolution_clock::now();
+            }
+            void printTime(const string &aux) {
+                auto duration = chrono::duration_cast<chrono::microseconds>(endTime - startTime);
+                cout << "Tiempo transcurrido para " << aux << ": " << duration.count() << " microsegundos." << endl;
+                cout << endl;
+            }
+        };
+        Timer timeOne, timeTwo, timeThree, timeFour, timeFive, timeSix, timeSeven;
 };
 
-class Timer {
-    chrono::high_resolution_clock::time_point startTime, endTime;
-public:
-    void start() {
-        startTime = chrono::high_resolution_clock::now();
-    }
-    void stop() {
-        endTime = chrono::high_resolution_clock::now();
-    }
-    void printTime(const string &aux) {
-        auto duration = chrono::duration_cast<chrono::microseconds>(endTime - startTime);
-        cout << "Tiempo transcurrido para " << aux << ": " << duration.count() << " microsegundos." << endl;
-        cout << endl;
-        cout << endl;
-    }
-};
 int main(){
-    BST tree;
-    int valores[] = {50, 30, 70, 20, 15, 8, 60};
-    int n = sizeof(valores) / sizeof(valores[0]);
-    for (int i = 0; i < n; i++) {
-        tree.insertar(valores[i]);
+    int N[] = {5, 10, 15, 20};
+    BST arboles[4];
+    for (int i = 0; i < 4; i++) { // Poner que es hasta 4 árboles
+        int pasos = 1;
+        while (pasos < N[i]) pasos *= 2; 
+        for (int k = pasos/2; k > 0; k /= 2) {
+            for (int j = k-1; j < N[i]; j += k*2) {
+                arboles[i].insertar(j); 
+            }
+        }
+        cout << "Árbol con N = " << N[i] << endl;
+        arboles[i].printTree();
+        
+        arboles[i].timeOne.start(); arboles[i].post(i*N[i]); arboles[i].timeOne.stop(); arboles[i].timeOne.printTime("Post-orden recursivo");
+        arboles[i].timeTwo.start(); arboles[i].postIte(i*N[i]); arboles[i].timeTwo.stop(); arboles[i].timeTwo.printTime("Post-orden Iterativo");
+        
+        arboles[i].timeThree.start(); arboles[i].pre(i*N[i]); arboles[i].timeThree.stop(); arboles[i].timeThree.printTime("Pre-orden recursivo");
+        arboles[i].timeFour.start(); arboles[i].preIte(i*N[i]); arboles[i].timeFour.stop(); arboles[i].timeFour.printTime("Pre-orden iterativo");
+        
+        arboles[i].timeFive.start(); arboles[i].in(i*N[i]); arboles[i].timeFive.stop(); arboles[i].timeFive.printTime("In-orden recursivo");
+        arboles[i].timeSix.start(); arboles[i].inIte(i*N[i]); arboles[i].timeSix.stop(); arboles[i].timeSix.printTime("In-orden iterativo");
+        
+        arboles[i].timeSeven.start(); arboles[i].anchura(i*N[i]); arboles[i].timeSeven.stop(); arboles[i].timeSeven.printTime("Anchura");
+        cout << "-------------------------------------------------------------------------------\n";
     }
-    tree.printTree();
-
-    Timer timeOne, timeTwo, timeThree, timeFour, timeFive, timeSix, timeSeven;
-    timeOne.start(); tree.post(50); timeOne.stop(); timeOne.printTime("Post-orden recursivo");
-    timeTwo.start(); tree.postIte(50);; timeTwo.stop(); timeTwo.printTime("Post-orden Iterativo");
     
-    timeThree.start(); tree.pre(15);  timeThree.stop(); timeThree.printTime("Pre-orden recursivo");
-    timeFour.start(); tree.preIte(15); timeFour.stop(); timeFour.printTime("Pre-orden iterativo");
-    
-    timeFive.start(); tree.in(70); timeFive.stop(); timeFive.printTime("In-orden recursivo");
-    timeSix.start(); tree.inIte(70); timeSix.stop(); timeSix.printTime("In-orden iterativo");
-    
-    timeSeven.start(); tree.anchura(30); timeSeven.stop(); timeSeven.printTime("Anchura");
-
     return 0;
 }
