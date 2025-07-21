@@ -581,7 +581,7 @@ class BST{
 int main(){
     int N[] = {5, 10, 15, 20};
     BST arboles[4];
-    for (int i = 0; i < 4; i++) { // Poner que es hasta 4 árboles
+    for (int i = 0; i < 2; i++) { // Poner que es hasta 4 árboles
         int pasos = 1;
         while (pasos < pow(2, N[i])) pasos *= 2; 
         for (int k = pasos/2; k > 0; k /= 2) {
@@ -592,16 +592,16 @@ int main(){
         cout << "Árbol con N = " << N[i] << endl;
         arboles[i].printTree();
         
-        arboles[i].timeOne.start(); arboles[i].post(pow(2, N[i])); arboles[i].timeOne.stop(); arboles[i].timeOne.printTime("Post-orden recursivo");
-        arboles[i].timeTwo.start(); arboles[i].postIte(pow(2, N[i])); arboles[i].timeTwo.stop(); arboles[i].timeTwo.printTime("Post-orden Iterativo");
+        arboles[i].timeOne.start(); arboles[i].post(pow(2, N[i])-2); arboles[i].timeOne.stop(); arboles[i].timeOne.printTime("Post-orden recursivo");
+        arboles[i].timeTwo.start(); arboles[i].postIte(pow(2, N[i])-2); arboles[i].timeTwo.stop(); arboles[i].timeTwo.printTime("Post-orden Iterativo");
         
-        arboles[i].timeThree.start(); arboles[i].pre(pow(2, N[i])); arboles[i].timeThree.stop(); arboles[i].timeThree.printTime("Pre-orden recursivo");
-        arboles[i].timeFour.start(); arboles[i].preIte(pow(2, N[i])); arboles[i].timeFour.stop(); arboles[i].timeFour.printTime("Pre-orden iterativo");
+        arboles[i].timeThree.start(); arboles[i].pre(pow(2, N[i])-2); arboles[i].timeThree.stop(); arboles[i].timeThree.printTime("Pre-orden recursivo");
+        arboles[i].timeFour.start(); arboles[i].preIte(pow(2, N[i])-2); arboles[i].timeFour.stop(); arboles[i].timeFour.printTime("Pre-orden iterativo");
         
-        arboles[i].timeFive.start(); arboles[i].in(pow(2, N[i])); arboles[i].timeFive.stop(); arboles[i].timeFive.printTime("In-orden recursivo");
-        arboles[i].timeSix.start(); arboles[i].inIte(pow(2, N[i])); arboles[i].timeSix.stop(); arboles[i].timeSix.printTime("In-orden iterativo");
+        arboles[i].timeFive.start(); arboles[i].in(pow(2, N[i])-2); arboles[i].timeFive.stop(); arboles[i].timeFive.printTime("In-orden recursivo");
+        arboles[i].timeSix.start(); arboles[i].inIte(pow(2, N[i])-2); arboles[i].timeSix.stop(); arboles[i].timeSix.printTime("In-orden iterativo");
         
-        arboles[i].timeSeven.start(); arboles[i].anchura(pow(2, N[i])); arboles[i].timeSeven.stop(); arboles[i].timeSeven.printTime("Anchura");
+        arboles[i].timeSeven.start(); arboles[i].anchura(pow(2, N[i])-2); arboles[i].timeSeven.stop(); arboles[i].timeSeven.printTime("Anchura");
         cout << "-------------------------------------------------------------------------------\n";
     }
     
