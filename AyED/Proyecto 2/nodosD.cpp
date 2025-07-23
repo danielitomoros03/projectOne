@@ -1,20 +1,7 @@
 #include<iostream>
 #include<string>
 using namespace std;
-
-struct Content{
-    char* arr;
-    int size;
-};
-
-// Funcion para determinar la cantidad de enlaces que puede tener un nodo
-int typeNode(const char &node) {
-    if (node == 'H') return 1;
-    if (node == 'E') return 4;
-    if (node == 'M') return 2;
-    if (node == 'C') return 2;
-    return 0;
-}
+int nodeCount = 0; // Contador de nodos creados
 
 // Función para determinar la energía de un enlace entre dos tipos de nodos
 int energy(const char &nodeOne, const char &nodeTwo) {
@@ -36,10 +23,11 @@ int energy(const char &nodeOne, const char &nodeTwo) {
     return 0; // Caso por defecto
 }
 
-bool isDigit(char d){
+bool isDigit(const char& d){
     return (d >= '2' && d <= '9');
 }
 
+/*
 Content extendString(const string& stringAux) {
     int h = 0, e = 0, m = 0, c = 0;
     
@@ -85,6 +73,7 @@ Content extendString(const string& stringAux) {
     info.size = total;
     return info;
 }
+*/
 
 void swap(char& a, char& b){
     int aux = a;
@@ -107,27 +96,40 @@ void permutar(char arr[], int k, int tam){
 }
 
 // Estructura para representar un Nodo en el grafo
-struct NodoArcano {
+struct Node{
     char type; // Tipo de nodo: 'H', 'E', 'M', 'C'
     int id; // Identificador único 
     int maxLinks; // Máximo de enlaces que puede formar
     int used; // Conteo de enlaces ya formados
+    Node *next; // Puntero al siguiente nodo
     
-    NodoArcano(char t = ' ', int i = 0) : type(t), id(i), used(0) {
-        maxLinks = typeNode(type);
+    Node(char t = ' ', int i = 0) : type(t), id(i), used(0) {
+        if (type == 'H') maxLinks = 1;
+        else if (type == 'E') maxLinks = 4;
+        else if (type == 'M') maxLinks = 2;
+        else if (type == 'C') maxLinks = 2;
+        else maxLinks = 0;
     }
 };
+
+// void createNodes(const string& input){}
 
 int main(){
     string aux;
     cin >> aux;
-    Content info = extendString(aux);
+    /* Content info = extendString(aux);
     char* arr = new char[info.size];
-
     for(int i = 0; i < info.size ; i++){
         arr[i] = info.arr[i];
+    } */
+
+    for(int i = 0; i < aux.length()-1 ; i++){
+        if(!isDigit(aux[i])) continue; // Ignorar si no es un dígito
+        // Crear un nodo con el tipo y el identificador
+        char d = aux[i];
+        Node nodo(d, nodeCount++);
     }
-    permutar(arr, 0, info.size);
+    // permutar(arr, 0, info.size);
 
     return 0;
 }
