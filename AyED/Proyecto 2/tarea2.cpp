@@ -581,7 +581,11 @@ class BST{
 int main(){
     int N[] = {5, 10, 15, 20};
     BST arboles[4];
+<<<<<<< Updated upstream
     for (int i = 0; i < 4; i++) { // Poner que es hasta 4 árboles
+=======
+    for (int i = 0; i < 4; i++) {
+>>>>>>> Stashed changes
         int pasos = 1;
         while (pasos < pow(2, N[i])) pasos *= 2; 
         for (int k = pasos/2; k > 0; k /= 2) {
