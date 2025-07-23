@@ -581,7 +581,7 @@ class BST{
 int main(){
     int N[] = {5, 10, 15, 20};
     BST arboles[4];
-    for (int i = 0; i < 2; i++) { // Poner que es hasta 4 árboles
+    for (int i = 0; i < 4; i++) { // Poner que es hasta 4 árboles
         int pasos = 1;
         while (pasos < pow(2, N[i])) pasos *= 2; 
         for (int k = pasos/2; k > 0; k /= 2) {
@@ -590,7 +590,7 @@ int main(){
             }
         }
         cout << "Árbol con N = " << N[i] << endl;
-        arboles[i].printTree();
+        //arboles[i].printTree();
         
         arboles[i].timeOne.start(); arboles[i].post(pow(2, N[i])-2); arboles[i].timeOne.stop(); arboles[i].timeOne.printTime("Post-orden recursivo");
         arboles[i].timeTwo.start(); arboles[i].postIte(pow(2, N[i])-2); arboles[i].timeTwo.stop(); arboles[i].timeTwo.printTime("Post-orden Iterativo");
