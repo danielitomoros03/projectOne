@@ -5,11 +5,11 @@
 
 using namespace std;
 
-// --- 1. Definición de Enumeraciones ---
+// Enumeraciones
 enum NodeType { Harguntino, Enfatico, Motriz, Cambiante };
 enum LinkType { Estable, Aporte, Inestable };
 
-// --- 2. Definición de Estructuras de Datos (Listas Enlazadas) ---
+// Definición de Estructuras de Datos (Listas Enlazadas)
 struct AdjacencyLink {
     int neighbor_node_id;
     int link_id;
@@ -48,7 +48,7 @@ struct Link {
         cycle_multiplier(1), is_part_of_cycle(false), is_part_of_homogeneous_cycle(false), next(nullptr) {}
 };
 
-// Nueva estructura para almacenar información de enlaces potenciales (reemplazo de std::vector)
+// Nueva estructura para almacenar información de enlaces potenciales
 struct PotentialLink {
     int node1_id;
     int node2_id;
@@ -59,14 +59,12 @@ struct PotentialLink {
         node1_id(n1), node2_id(n2), type(t), energy(e), next(n) {}
 };
 
-// Nueva estructura para reemplazar std::pair<long long, int>
 struct CustomPair {
     long long first;
     int second;
 };
 
 
-// --- 3. Variables Globales ---
 long long best_overall_energy = -2e18; // Inicializar con un valor muy bajo
 long long best_overall_lifetime = -2e18; // Inicializar con un valor muy bajo
 int global_next_node_id = 0;
@@ -81,7 +79,6 @@ Link* best_links_head = nullptr;
 // Variable global para la cabeza de la lista enlazada de enlaces potenciales
 PotentialLink* all_potential_links_head = nullptr;
 
-
 // Función para clonar la lista de nodos y su adyacencia
 Node* clone_nodes(Node* orig_head) {
     if (!orig_head) return nullptr;
@@ -92,7 +89,7 @@ Node* clone_nodes(Node* orig_head) {
         Node* n = new Node(orig->type_char, orig->id, orig->type_enum, orig->maxLinks);
         n->used = orig->used;
         
-        // CORRECCIÓN: Clonar adyacencia sin modificar la lista original
+        // Clonar adyacencia sin modificar la lista original
         AdjacencyLink* orig_adj_current = orig->adj_list_head;
         AdjacencyLink* new_adj_head = nullptr;
         AdjacencyLink* new_adj_tail = nullptr;
@@ -171,12 +168,12 @@ void free_potential_links(PotentialLink* head) {
     }
 }
 
-// --- Declaraciones de funciones ---
+// Funciones 
 Node* parse_input(const string& input_str);
 Node* find_node_by_id(Node* head, int id);
 Link* find_link_by_id(Link* head, int id);
 
-// --- 4. Funciones Auxiliares para Listas Enlazadas ---
+// Funciones Auxiliares para Listas Enlazadas
 Node* add_node_to_list(Node* head, Node* newNode) {
     if (head == nullptr) return newNode;
     Node* current = head;
@@ -277,9 +274,6 @@ void delete_links_list(Link* head) {
     }
 }
 
-// --- 5. Funciones de Lógica de Negocio ---
-
-// Función para obtener propiedades del enlace sin verificar maxLinks
 bool get_link_properties(const Node& n1, const Node& n2, LinkType& out_type, int& out_energy) {
     // Regla de prioridad: Harguntino (H) forma enlaces estables (0 energía) con todos los otros nodos.
     if (n1.type_enum == Harguntino || n2.type_enum == Harguntino) {
@@ -315,14 +309,12 @@ bool get_link_properties(const Node& n1, const Node& n2, LinkType& out_type, int
     return false; // No se puede formar un enlace con las reglas dadas
 }
 
-// can_form_and_determine_link_type ahora solo verifica maxLinks y llama a get_link_properties
 bool can_form_link(const Node& n1, const Node& n2, LinkType& out_type, int& out_energy) {
     if (n1.used >= n1.maxLinks || n2.used >= n2.maxLinks) {
         return false;
     }
     return get_link_properties(n1, n2, out_type, out_energy);
 }
-
 
 void reset_dfs_flags(Node* nodes_head) {
     Node* current = nodes_head;
@@ -363,7 +355,6 @@ void dfs_for_cycles(Node* u_node, Node* nodes_head, Link* links_head) {
             bool homogeneous_cycle = true;
             NodeType first_node_type = u_node->type_enum;
             
-            // Recorrer el ciclo para verificar homogeneidad
             Node* temp_node = u_node;
             while (temp_node != nullptr && temp_node->id != v_node->id) {
                 if (temp_node->type_enum != first_node_type) {
@@ -375,7 +366,6 @@ void dfs_for_cycles(Node* u_node, Node* nodes_head, Link* links_head) {
                 homogeneous_cycle = false;
             }
 
-            // Marcar todos los enlaces en el ciclo y aplicar multiplicador
             temp_node = u_node;
             while (temp_node != nullptr && temp_node->id != v_node->id) {
                 Node* parent_node = find_node_by_id(nodes_head, temp_node->parent_id);
@@ -401,7 +391,7 @@ void dfs_for_cycles(Node* u_node, Node* nodes_head, Link* links_head) {
                 }
                 temp_node = parent_node;
             }
-            // También aplicar al enlace que cerró el ciclo (u_node -> v_node)
+            
             if (homogeneous_cycle) {
                 current_link->is_part_of_homogeneous_cycle = true;
                 if (3 > current_link->cycle_multiplier) {
@@ -452,13 +442,11 @@ long long calculate_total_system_energy(Node* nodes_head, Link* links_head) {
     return total_energy;
 }
 
-// Variables globales para el camino más largo que maximiza (longitud, luego energía penalizada)
-long long max_path_energy_for_lifetime = -2e18; // Almacena la energía *penalizada* del mejor camino
+long long max_path_energy_for_lifetime = -2e18; // Almacena la energía penalizada del mejor camino
 int max_path_nodes_for_lifetime = 0;     // Almacena la longitud del mejor camino
+bool used_in_path[100]; 
 
-bool used_in_path[100]; // Usado para dfs_for_longest_path
-
-void dfs_for_longest_path(Node* u_node, Node* nodes_head, Link* links_head,
+void dfs_longest_simple_path(Node* u_node, Node* nodes_head, Link* links_head,
                           long long current_path_link_energy, int current_path_length,
                           int current_path_node_ids[], int current_path_len_idx) {
     used_in_path[u_node->id] = true;
@@ -468,11 +456,11 @@ void dfs_for_longest_path(Node* u_node, Node* nodes_head, Link* links_head,
     bool extended = false;
     AdjacencyLink* adj_link = u_node->adj_list_head;
     while (adj_link != nullptr) {
-        Node* v_node = findNodeById(nodes_head, adj_link->neighbor_node_id);
-        Link* current_link = findLinkById(links_head, adj_link->link_id);
+        Node* v_node = find_node_by_id(nodes_head, adj_link->neighbor_node_id);
+        Link* current_link = find_link_by_id(links_head, adj_link->link_id);
         if (v_node != nullptr && !used_in_path[v_node->id] && current_link != nullptr) {
             extended = true;
-            dfs_for_longest_path(v_node, nodes_head, links_head,
+            dfs_longest_simple_path(v_node, nodes_head, links_head,
                                  current_path_link_energy + (current_link->energy_contribution * current_link->cycle_multiplier),
                                  current_path_length + 1, current_path_node_ids, current_path_len_idx);
         }
@@ -482,13 +470,12 @@ void dfs_for_longest_path(Node* u_node, Node* nodes_head, Link* links_head,
     if (!extended) { // Fin de un camino
         long long penalized_path_energy = current_path_link_energy;
         for (int i = 0; i < current_path_len_idx; ++i) {
-            Node* n = findNodeById(nodes_head, current_path_node_ids[i]);
+            Node* n = find_node_by_id(nodes_head, current_path_node_ids[i]);
             if (n) {
                 penalized_path_energy += (n->maxLinks - n->used) * (-1); // Add penalty for unused slots of nodes IN THE PATH
             }
         }
 
-        // Criterio de selección: mayor longitud, luego mayor energía penalizada
         if (current_path_length > max_path_nodes_for_lifetime) {
             max_path_nodes_for_lifetime = current_path_length;
             max_path_energy_for_lifetime = penalized_path_energy;
@@ -501,7 +488,7 @@ void dfs_for_longest_path(Node* u_node, Node* nodes_head, Link* links_head,
     used_in_path[u_node->id] = false; // Backtrack
 }
 
-CustomPair find_longest_path_info(Node* nodes_head, Link* links_head) {
+CustomPair get_longest_path_info(Node* nodes_head, Link* links_head) {
     max_path_energy_for_lifetime = -2e18; // Reset para cada llamada
     max_path_nodes_for_lifetime = 0;
 
@@ -511,7 +498,7 @@ CustomPair find_longest_path_info(Node* nodes_head, Link* links_head) {
     while (current_start_node != nullptr) {
         for (int i = 0; i < 100; ++i) used_in_path[i] = false; 
         int current_path_node_ids[100]; // Array para almacenar los IDs de los nodos en el camino actual
-        dfs_for_longest_path(current_start_node, nodes_head, links_head, 0, 1, current_path_node_ids, 0);
+        dfs_longest_simple_path(current_start_node, nodes_head, links_head, 0, 1, current_path_node_ids, 0);
         current_start_node = current_start_node->next;
     }
     CustomPair result;
@@ -520,9 +507,8 @@ CustomPair find_longest_path_info(Node* nodes_head, Link* links_head) {
     return result;
 }
 
-// DFS especial para camino más largo penalizado SOLO para la estructura ganadora
-long long final_best_path_energy = 0; // Almacena la energía *penalizada* del mejor camino final
-int final_best_path_length = 0;     // Almacena la longitud del mejor camino final
+long long final_best_path_energy = 0; 
+int final_best_path_length = 0;     
 
 bool used_in_path_final[100];
 
@@ -536,8 +522,8 @@ void dfs_longest_path_final(Node* u_node, Node* nodes_head, Link* links_head,
     bool extended = false;
     AdjacencyLink* adj_link = u_node->adj_list_head;
     while (adj_link != nullptr) {
-        Node* v_node = findNodeById(nodes_head, adj_link->neighbor_node_id);
-        Link* current_link = findLinkById(links_head, adj_link->link_id);
+        Node* v_node = find_node_by_id(nodes_head, adj_link->neighbor_node_id);
+        Link* current_link = find_link_by_id(links_head, adj_link->link_id);
         if (v_node != nullptr && !used_in_path_final[v_node->id] && current_link != nullptr) {
             extended = true;
             dfs_longest_path_final(v_node, nodes_head, links_head,
@@ -550,7 +536,7 @@ void dfs_longest_path_final(Node* u_node, Node* nodes_head, Link* links_head,
     if (!extended) { // Fin de un camino
         long long penalized_path_energy = current_path_link_energy;
         for (int i = 0; i < current_path_len_idx; ++i) {
-            Node* n = findNodeById(nodes_head, current_path_node_ids[i]);
+            Node* n = find_node_by_id(nodes_head, current_path_node_ids[i]);
             if (n) {
                 penalized_path_energy += (n->maxLinks - n->used) * (-1);
             }
@@ -569,13 +555,10 @@ void dfs_longest_path_final(Node* u_node, Node* nodes_head, Link* links_head,
     used_in_path_final[u_node->id] = false;
 }
 
-// --- 6. Algoritmo de Backtracking (Generación y Evaluación de Estructuras) ---
-// Nuevo backtracking exhaustivo que itera sobre la lista enlazada de enlaces potenciales
-void backtrack_v2(PotentialLink* current_p_link, Node* nodes_head, Link*& current_links_head) {
-    // Caso base: todos los enlaces potenciales han sido considerados
+void explore_all_structures(PotentialLink* current_p_link, Node* nodes_head, Link*& current_links_head) {
     if (current_p_link == nullptr) {
-        long long current_total_energy = calculate_total_energy(nodes_head, current_links_head);
-        CustomPair longest_path_info = find_longest_path_info(nodes_head, current_links_head);
+        long long current_total_energy = calculate_total_system_energy(nodes_head, current_links_head);
+        CustomPair longest_path_info = get_longest_path_info(nodes_head, current_links_head);
         long long current_lifetime = abs(current_total_energy) * abs(longest_path_info.first) * longest_path_info.second * 10;
 
         if (current_total_energy > best_overall_energy) {
@@ -597,25 +580,22 @@ void backtrack_v2(PotentialLink* current_p_link, Node* nodes_head, Link*& curren
         return;
     }
 
-    Node* n1 = findNodeById(nodes_head, current_p_link->node1_id);
-    Node* n2 = findNodeById(nodes_head, current_p_link->node2_id);
+    Node* n1 = find_node_by_id(nodes_head, current_p_link->node1_id);
+    Node* n2 = find_node_by_id(nodes_head, current_p_link->node2_id);
 
-    // Opción 1: No añadir este enlace
-    backtrack_v2(current_p_link->next, nodes_head, current_links_head);
+    explore_all_structures(current_p_link->next, nodes_head, current_links_head);
 
-    // Opción 2: Añadir este enlace (si es válido según maxLinks)
     if (n1->used < n1->maxLinks && n2->used < n2->maxLinks) {
         Link* new_link = new Link(global_next_link_id++, n1->id, n2->id, current_p_link->type, current_p_link->energy);
-        addLinkToList(current_links_head, new_link);
-        addAdjacencyLink(n1, n2->id, new_link->id);
-        addAdjacencyLink(n2, n1->id, new_link->id);
+        add_link_to_list(current_links_head, new_link);
+        add_adjacency_link(n1, n2->id, new_link->id);
+        add_adjacency_link(n2, n1->id, new_link->id);
 
-        backtrack_v2(current_p_link->next, nodes_head, current_links_head);
+        explore_all_structures(current_p_link->next, nodes_head, current_links_head);
 
-        // Deshacer
-        removeAdjacencyLink(n1, n2->id, new_link->id);
-        removeAdjacencyLink(n2, n1->id, new_link->id);
-        current_links_head = removeLastLinkFromList(current_links_head);
+        remove_adjacency_link(n1, n2->id, new_link->id);
+        remove_adjacency_link(n2, n1->id, new_link->id);
+        current_links_head = remove_last_link_from_list(current_links_head);
         global_next_link_id--;
     }
 }
@@ -650,8 +630,6 @@ void precompute_potential_links(Node* nodes_head, PotentialLink*& head) {
     }
 }
 
-
-// --- 7. Función Principal ---
 int main() {
     string input_line;
     cin >> input_line;
@@ -664,15 +642,12 @@ int main() {
         temp_node_ptr = temp_node_ptr->next;
     }
 
-    // Precalcular todos los enlaces potenciales y almacenarlos en la lista enlazada global
     precompute_potential_links(global_nodes_head, all_potential_links_head);
 
     Link* current_structure_links_head = nullptr;
     
-    // Iniciar el backtracking exhaustivo con la cabeza de la lista de enlaces potenciales
-    backtrack_v2(all_potential_links_head, global_nodes_head, current_structure_links_head);
+    explore_all_structures(all_potential_links_head, global_nodes_head, current_structure_links_head);
 
-    // Calcular VU solo para la estructura ganadora
     final_best_path_energy = -2e18; // Reset para el cálculo final
     final_best_path_length = 0;
     for (int i = 0; i < 100; ++i) used_in_path_final[i] = false;
@@ -689,8 +664,7 @@ int main() {
 
     cout << best_overall_energy << " " << final_lifetime_calculated << endl;
 
-    // Liberar toda la memoria asignada
-    deleteNodesList(global_nodes_head);
+    delete_nodes_list(global_nodes_head);
     if (best_nodes_head) free_cloned_nodes(best_nodes_head);
     if (best_links_head) free_cloned_links(best_links_head);
     free_potential_links(all_potential_links_head); // Liberar la lista de enlaces potenciales
@@ -698,7 +672,6 @@ int main() {
     return 0;
 }
 
-// --- 8. Implementación de parse_input ---
 Node* parse_input(const string& input_str) {
     Node* head = nullptr;
     Node* tail = nullptr;
