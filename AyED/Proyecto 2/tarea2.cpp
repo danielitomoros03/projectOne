@@ -7,18 +7,18 @@ using namespace chrono;
 
 template <typename T>
 class Queue {
-private:
-    struct Node {
-        T data;
-        Node* next;
-        Node(const T& d, Node* n = nullptr) : data(d), next(n) {}
-    };
-    
-    Node* front;   // Primer elemento
-    Node* rear;    // Último elemento
-    int count;     // Contador de elementos
+    private:
+        struct Node {
+            T data;
+            Node* next;
+            Node(const T& d, Node* n = nullptr) : data(d), next(n) {}
+        };
+        
+        Node* front;   // Primer elemento
+        Node* rear;    // Último elemento
+        int count;     // Contador de elementos
 
-public:
+    public:
     typedef Node* tPosition;
     // Constructor
     Queue() : front(nullptr), rear(nullptr), count(0) {}
@@ -95,7 +95,6 @@ public:
         }cout << endl;
     }
 };
-
 template <typename T>
 class Stack{
     private:
@@ -222,7 +221,6 @@ class Stack{
         }
        
 };
-
 class BST{ 
     private:
         struct Nodo{
